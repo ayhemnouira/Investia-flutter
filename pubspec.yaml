@@ -1,0 +1,101 @@
+name: investia # Utilise un nom de projet unique pour l'équipe
+description: Plateforme de Gestion d'Investissement - Invest IA # Description du projet combiné
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Garder 'none' pour un projet privé
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+# In Windows, build-name is used as the major, minor, and patch parts
+# of the product and file versions while build-number is used as the build suffix.
+version: 1.0.0+1 # Garder la version initiale
+
+environment:
+  # Utilise les contraintes SDK les plus larges et les plus récentes compatibles
+  sdk: ">=3.0.0 <4.0.0" # Assure la compatibilité avec les versions récentes (>3.7)
+  flutter: ">=3.7.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_staggered_animations: ^1.1.1
+
+  # === Dépendances Communes / Base de l'application Invest IA ===
+  cupertino_icons: ^1.0.8 # Icônes style iOS
+  http: ^1.3.0 # Package pour les requêtes HTTP (Version 1.3.0 est compatible avec 1.2.2 de Olsen)
+  provider: ^6.1.2 # Gestionnaire d'état (utilisé par certains modules, coexiste avec Riverpod)
+  shared_preferences: ^2.5.3 # Stockage local simple clé-valeur
+  intl: ^0.20.2 # Internationalisation et formatage (dates, nombres)
+
+  # === Dépendances Module External Data Integration (Tes modules) ===
+  google_fonts: ^6.1.0 # Polices Google
+  audioplayers: ^6.4.0 # Fonctionnalité audio (à enlever si non utilisée globalement)
+  hive: ^2.2.3 # Base de données NoSQL pour le cache
+  hive_flutter: ^1.1.0 # Intégration Hive Flutter
+  path_provider: ^2.0.0 # Utile pour trouver le chemin de stockage de Hive
+
+  # === Dépendances Module Authentification (de ton collègue Mohamed) ===
+  flutter_dotenv: ^5.1.0 # Variables d'environnement
+  flutter_secure_storage: ^8.0.0 # Stockage sécurisé
+
+  # === Dépendance pour afficher les images en cache (utilisé dans Module External Data) ===
+  cached_network_image: ^3.3.1 # Images depuis le réseau avec cache
+
+  # === Dépendances Module Ordres & Rééquilibrage (d'Amira) ===
+  # Aucune dépendance nouvelle d'après son pubspec.yaml partagé.
+  # Si son code utilise d'autres packages non listés, il faudra les ajouter ici après analyse de son code.
+
+  # === Dépendances Module Gestion des Risques (d'Olsen) ===
+  flutter_riverpod: ^2.5.3 # <-- AJOUTÉ : Gestion d'état Riverpod
+  go_router: ^15.0.3       # <-- AJOUTÉ : Routage GoRouter
+  fl_chart: ^0.69.0        # <-- AJOUTÉ : Graphiques
+  freezed_annotation: ^2.4.4 # <-- AJOUTÉ : Annotations Freezed
+
+
+  # === Dépendances Optionnelles (reste commenté si non utilisé globalement) ===
+  connectivity_plus: ^6.0.3
+  url_launcher: ^6.2.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting rules
+  flutter_lints: ^5.0.0 # Version standard
+
+  # Dépendances de développement pour les générateurs de code
+  hive_generator: ^2.0.1 # Générateur Hive
+  build_runner: ^2.4.9 # <-- EXISTANT : Outil pour lancer les générateurs (compatible avec les versions plus récentes)
+
+  # === Dépendances de développement pour Freezed (Module Risque) ===
+  freezed: ^2.5.3           # <-- AJOUTÉ : Générateur Freezed
+
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+  # Déclare les assets que Flutter doit inclure
+  assets:
+    - assets/.env # Asset pour dotenv
+    # Assets du Module de Paiement d'Israa (assure-toi que les chemins sont corrects)
+    - assets/images/aa.jpg
+    - assets/images/fd.jpg
+    # Ajoutez ici d'autres assets si les autres modules en utilisent (Module Risque, Module Ordre)
+    # - assets/images/risk_icon.png # Exemple si le module risque avait une image spécifique
+
+
+  uses-material-design: true
+
+  # ... (sections fonts commentées)
