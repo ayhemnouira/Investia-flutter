@@ -10,8 +10,9 @@ import 'package:investia/screens/home_screen.dart';
 import 'package:investia/screens/news_screen.dart';
 import 'package:investia/screens/asset_list_screen.dart';
 import 'package:investia/screens/asset_detail_screen.dart';
+import 'package:investia/screens/payment/One_Time_Payment_Page.dart';
 import 'package:investia/screens/payment/payment_selection_screen.dart';
-import 'package:investia/screens/payment/one_time_payment_page.dart';
+
 import 'package:investia/screens/payment/subscription_page.dart';
 import 'package:investia/screens/orders/order_screen.dart';
 import 'package:investia/screens/main_screen.dart';
@@ -24,17 +25,17 @@ import 'package:investia/risk_management/features/recommendations/views/recommen
 import 'package:investia/providers/auth_provider.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
-GlobalKey<NavigatorState>(debugLabel: 'root');
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellHome');
+    GlobalKey<NavigatorState>(debugLabel: 'shellHome');
 final GlobalKey<NavigatorState> _shellNavigatorMarketKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellMarket');
+    GlobalKey<NavigatorState>(debugLabel: 'shellMarket');
 final GlobalKey<NavigatorState> _shellNavigatorNewsKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellNews');
+    GlobalKey<NavigatorState>(debugLabel: 'shellNews');
 final GlobalKey<NavigatorState> _shellNavigatorOrdersKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellOrders');
+    GlobalKey<NavigatorState>(debugLabel: 'shellOrders');
 final GlobalKey<NavigatorState> _shellNavigatorRiskKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellRisk');
+    GlobalKey<NavigatorState>(debugLabel: 'shellRisk');
 
 class AppRoutes {
   static const String login = '/login';
@@ -80,25 +81,30 @@ GoRouter createGoRouter(AuthProvider authProvider) {
 
       if (!isInitialized) {
         if (!onAuthRoute) {
-          print("Router Redirect: Not initialized and not on auth route. Redirecting to login.");
+          print(
+              "Router Redirect: Not initialized and not on auth route. Redirecting to login.");
           return AppRoutes.login;
         }
-        print("Router Redirect: Not initialized but on auth route. Allowing navigation to ${state.matchedLocation}.");
+        print(
+            "Router Redirect: Not initialized but on auth route. Allowing navigation to ${state.matchedLocation}.");
         return null;
       }
 
       if (!isAuthenticated && !onAuthRoute) {
-        print("Router Redirect: Not authenticated and not on auth route. Redirecting to login.");
+        print(
+            "Router Redirect: Not authenticated and not on auth route. Redirecting to login.");
         return AppRoutes.login;
       }
 
       if (isAuthenticated && onAuthRoute) {
-        print("Router Redirect: Authenticated but on auth route. Redirecting to home.");
+        print(
+            "Router Redirect: Authenticated but on auth route. Redirecting to home.");
         return AppRoutes.home;
       }
 
       if (isAuthenticated && state.matchedLocation == '/') {
-        print("Router Redirect: Authenticated and on root. Redirecting to home.");
+        print(
+            "Router Redirect: Authenticated and on root. Redirecting to home.");
         return AppRoutes.home;
       }
       return null;
@@ -106,7 +112,8 @@ GoRouter createGoRouter(AuthProvider authProvider) {
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.login,
-        name: AppRoutes.login, // Utiliser le chemin comme nom est une convention simple
+        name: AppRoutes
+            .login, // Utiliser le chemin comme nom est une convention simple
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
@@ -127,7 +134,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 path: AppRoutes.home,
                 name: AppRoutes.home,
                 builder: (BuildContext context, GoRouterState state) =>
-                const HomeScreen(),
+                    const HomeScreen(),
               ),
             ],
           ),
@@ -138,7 +145,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 path: AppRoutes.marketList,
                 name: AppRoutes.marketList,
                 builder: (BuildContext context, GoRouterState state) =>
-                const AssetListScreen(),
+                    const AssetListScreen(),
               ),
             ],
           ),
@@ -149,7 +156,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 path: AppRoutes.news,
                 name: AppRoutes.news,
                 builder: (BuildContext context, GoRouterState state) =>
-                const NewsScreen(),
+                    const NewsScreen(),
               ),
             ],
           ),
@@ -160,7 +167,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 path: AppRoutes.orders,
                 name: AppRoutes.orders,
                 builder: (BuildContext context, GoRouterState state) =>
-                const OrderScreen(),
+                    const OrderScreen(),
               ),
             ],
           ),
@@ -171,7 +178,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 path: AppRoutes.riskManagementList,
                 name: AppRoutes.riskManagementList,
                 builder: (BuildContext context, GoRouterState state) =>
-                const RiskListScreen(),
+                    const RiskListScreen(),
               ),
             ],
           ),
@@ -179,7 +186,8 @@ GoRouter createGoRouter(AuthProvider authProvider) {
       ),
       GoRoute(
         path: AppRoutes.assetDetail,
-        name: AppRoutes.assetDetail, // Nommer la route pour la navigation par nom
+        name:
+            AppRoutes.assetDetail, // Nommer la route pour la navigation par nom
         builder: (context, state) {
           final assetId = state.pathParameters['assetId'];
           if (assetId == null) {
@@ -192,15 +200,18 @@ GoRouter createGoRouter(AuthProvider authProvider) {
         path: AppRoutes.paymentServices,
         name: AppRoutes.paymentServices, // Nom de la route parente
         builder: (context, state) => const PaymentSelectionScreen(),
-        routes: [ // Sous-routes pour les types de paiement
+        routes: [
+          // Sous-routes pour les types de paiement
           GoRoute(
             path: AppRoutes.oneTimePaymentPathSegment, // 'one-time'
-            name: AppRoutes.oneTimePaymentRouteName,   // Nom unique pour la sous-route
+            name: AppRoutes
+                .oneTimePaymentRouteName, // Nom unique pour la sous-route
             builder: (context, state) => OneTimePaymentPage(),
           ),
           GoRoute(
             path: AppRoutes.subscriptionPaymentPathSegment, // 'subscription'
-            name: AppRoutes.subscriptionPaymentRouteName,   // Nom unique pour la sous-route
+            name: AppRoutes
+                .subscriptionPaymentRouteName, // Nom unique pour la sous-route
             builder: (context, state) => SubscriptionPage(),
           ),
         ],
@@ -222,7 +233,9 @@ GoRouter createGoRouter(AuthProvider authProvider) {
           final idString = state.pathParameters['riskId'];
           final int? riskId = idString != null ? int.tryParse(idString) : null;
           if (riskId == null) {
-            return _ErrorScreen(message: "ID de risque invalide pour ${state.uri}: '$idString'");
+            return _ErrorScreen(
+                message:
+                    "ID de risque invalide pour ${state.uri}: '$idString'");
           }
           return RiskFormScreen(riskId: riskId);
         },
@@ -242,7 +255,8 @@ GoRouter createGoRouter(AuthProvider authProvider) {
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  throw UnimplementedError('goRouterProvider must be overridden with an instance of GoRouter that depends on AuthProvider');
+  throw UnimplementedError(
+      'goRouterProvider must be overridden with an instance of GoRouter that depends on AuthProvider');
 });
 
 class _ErrorScreen extends StatelessWidget {

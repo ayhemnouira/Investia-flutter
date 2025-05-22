@@ -1,8 +1,9 @@
-// lib/risk_management/navigation/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Pour la définition du goRouterProvider
-import 'package:provider/provider.dart' as provider_pkg; // Pour AuthProvider
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:investia/screens/payment/One_Time_Payment_Page.dart';
+import 'package:investia/screens/withdrawal_screen.dart';
+import 'package:provider/provider.dart' as provider_pkg;
 
 // --- Écrans de l'application principale ---
 import 'package:investia/screens/auth/login_screen.dart';
@@ -12,10 +13,11 @@ import 'package:investia/screens/news_screen.dart';
 import 'package:investia/screens/asset_list_screen.dart';
 import 'package:investia/screens/asset_detail_screen.dart';
 import 'package:investia/screens/payment/payment_selection_screen.dart';
-import 'package:investia/screens/payment/one_time_payment_page.dart';
 import 'package:investia/screens/payment/subscription_page.dart';
 import 'package:investia/screens/orders/order_screen.dart';
 import 'package:investia/screens/main_screen.dart';
+import 'package:investia/screens/watchlist_screen.dart';
+import 'package:investia/screens/wallet_screen.dart';
 
 // --- Écrans du module Risk Management ---
 import 'package:investia/risk_management/features/risk_analysis/views/risk_analysis_screen.dart';
@@ -26,21 +28,27 @@ import 'package:investia/risk_management/features/recommendations/views/recommen
 // --- Providers & Services ---
 import 'package:investia/providers/auth_provider.dart';
 
-// GlobalKey pour le Navigator racine (peut toujours être utile pour d'autres usages, mais pas pour obtenir le contexte dans redirect initial)
+// GlobalKey pour le Navigator racine
 final GlobalKey<NavigatorState> rootNavigatorKey =
-GlobalKey<NavigatorState>(debugLabel: 'root');
+    GlobalKey<NavigatorState>(debugLabel: 'root');
 
 // GlobalKeys pour les navigateurs des branches du Shell
 final GlobalKey<NavigatorState> _shellNavigatorHomeKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellHome');
+    GlobalKey<NavigatorState>(debugLabel: 'shellHome');
 final GlobalKey<NavigatorState> _shellNavigatorMarketKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellMarket');
+    GlobalKey<NavigatorState>(debugLabel: 'shellMarket');
 final GlobalKey<NavigatorState> _shellNavigatorNewsKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellNews');
+    GlobalKey<NavigatorState>(debugLabel: 'shellNews');
 final GlobalKey<NavigatorState> _shellNavigatorOrdersKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellOrders');
+    GlobalKey<NavigatorState>(debugLabel: 'shellOrders');
 final GlobalKey<NavigatorState> _shellNavigatorRiskKey =
-GlobalKey<NavigatorState>(debugLabel: 'shellRisk');
+    GlobalKey<NavigatorState>(debugLabel: 'shellRisk');
+final GlobalKey<NavigatorState> _shellNavigatorWatchlistKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWatchlist');
+final GlobalKey<NavigatorState> _shellNavigatorWalletKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWallet');
+final GlobalKey<NavigatorState> _shellNavigatorWithdrawKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWithdraw');
 
 class AppRoutes {
   static const String login = '/login';
@@ -50,11 +58,14 @@ class AppRoutes {
   static const String news = '/news';
   static const String orders = '/orders';
   static const String riskManagementList = '/risk-module/list';
+  static const String watchlist = '/watchlist';
+  static const String wallet = '/wallet';
+  static const String withdraw = '/withdraw';
   static const String assetDetail = '/asset-detail/:assetId';
   static String assetDetailPath(String assetId) => '/asset-detail/$assetId';
   static const String paymentServices = '/payment-services';
-  static const String oneTimePayment = 'one-time'; // Relatif à paymentServices
-  static const String subscriptionPayment = 'subscription'; // Relatif à paymentServices
+  static const String oneTimePayment = 'one-time';
+  static const String subscriptionPayment = 'subscription';
   static const String riskAnalysis = '/risk-module/analysis';
   static const String addRisk = '/risk-module/list/add';
   static const String editRisk = '/risk-module/list/edit/:riskId';
@@ -63,71 +74,48 @@ class AppRoutes {
 }
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  // Le `ref` ici vient de Riverpod, pour la création du GoRouter lui-même.
-  // Il n'est pas directement utilisé pour obtenir AuthProvider dans redirect.
-
-  // Obtenir une référence à AuthProvider de manière sûre.
-  // Nous ne pouvons pas utiliser `ref.watch` directement ici car goRouterProvider est un Provider,
-  // pas un ConsumerWidget ou un autre type de provider Riverpod qui reconstruit.
-  // AuthProvider est fourni par package:provider.
-  // La solution est d'utiliser le `BuildContext` fourni par la fonction `redirect`.
-
   return GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: AppRoutes.login, // IMPORTANT: Commencer par login pour forcer le redirect si nécessaire
+    initialLocation: AppRoutes.login,
     debugLogDiagnostics: true,
-
     redirect: (BuildContext context, GoRouterState state) async {
-      // ---- MODIFICATION IMPORTANTE ICI ----
-      // Utiliser le `context` fourni par la fonction `redirect`
-      // pour accéder à `AuthProvider` de `package:provider`.
-      final authProvider = provider_pkg.Provider.of<AuthProvider>(context, listen: false);
-
-      // Assurer l'initialisation de AuthProvider
+      final authProvider =
+          provider_pkg.Provider.of<AuthProvider>(context, listen: false);
       if (!authProvider.isInitialized) {
         try {
           print("Router Redirect: Initializing AuthProvider...");
           await authProvider.initialize();
-          print("Router Redirect: AuthProvider initialized. Username: ${authProvider.username}");
+          print(
+              "Router Redirect: AuthProvider initialized. Username: ${authProvider.username}");
         } catch (e) {
           print("Router Redirect: Error initializing AuthProvider: $e");
-          // En cas d'erreur, on pourrait vouloir explicitement aller à login
           if (state.matchedLocation != AppRoutes.login) {
             return AppRoutes.login;
           }
         }
       }
-
       final isAuthenticated = authProvider.username != null;
       final onAuthRoute = state.matchedLocation == AppRoutes.login ||
           state.matchedLocation == AppRoutes.signup;
-
-      print("Router Redirect: Path: ${state.matchedLocation}, Authenticated: $isAuthenticated, OnAuthRoute: $onAuthRoute");
-
-      // Si l'utilisateur n'est pas authentifié ET n'est pas sur une page d'authentification
+      print(
+          "Router Redirect: Path: ${state.matchedLocation}, Authenticated: $isAuthenticated, OnAuthRoute: $onAuthRoute");
       if (!isAuthenticated && !onAuthRoute) {
-        print("Router Redirect: Not authenticated and not on auth route. Redirecting to login.");
-        return AppRoutes.login; // Rediriger vers login
+        print(
+            "Router Redirect: Not authenticated and not on auth route. Redirecting to login.");
+        return AppRoutes.login;
       }
-
-      // Si l'utilisateur est authentifié ET est sur une page d'authentification (login/signup)
       if (isAuthenticated && onAuthRoute) {
-        print("Router Redirect: Authenticated but on auth route. Redirecting to home.");
-        return AppRoutes.home; // Rediriger vers home
-      }
-
-      // Si l'utilisateur est authentifié et tente d'accéder à la racine "/",
-      // rediriger vers home s'il n'y est pas déjà.
-      // Utile si initialLocation était "/" et que l'utilisateur est déjà loggué.
-      if (isAuthenticated && state.matchedLocation == '/') {
-        print("Router Redirect: Authenticated and on root. Redirecting to home.");
+        print(
+            "Router Redirect: Authenticated but on auth route. Redirecting to home.");
         return AppRoutes.home;
       }
-
-
-      return null; // Pas de redirection, continuer vers la destination demandée
+      if (isAuthenticated && state.matchedLocation == '/') {
+        print(
+            "Router Redirect: Authenticated and on root. Redirecting to home.");
+        return AppRoutes.home;
+      }
+      return null;
     },
-
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.login,
@@ -149,10 +137,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             navigatorKey: _shellNavigatorHomeKey,
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.home, // Sera /home
+                path: AppRoutes.home,
                 name: AppRoutes.home,
                 builder: (BuildContext context, GoRouterState state) =>
-                const HomeScreen(),
+                    const HomeScreen(),
               ),
             ],
           ),
@@ -160,10 +148,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             navigatorKey: _shellNavigatorMarketKey,
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.marketList, // Sera /market
+                path: AppRoutes.marketList,
                 name: AppRoutes.marketList,
                 builder: (BuildContext context, GoRouterState state) =>
-                const AssetListScreen(),
+                    const AssetListScreen(),
               ),
             ],
           ),
@@ -171,10 +159,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             navigatorKey: _shellNavigatorNewsKey,
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.news, // Sera /news
+                path: AppRoutes.news,
                 name: AppRoutes.news,
                 builder: (BuildContext context, GoRouterState state) =>
-                const NewsScreen(),
+                    const NewsScreen(),
               ),
             ],
           ),
@@ -182,10 +170,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             navigatorKey: _shellNavigatorOrdersKey,
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.orders, // Sera /orders
+                path: AppRoutes.orders,
                 name: AppRoutes.orders,
                 builder: (BuildContext context, GoRouterState state) =>
-                const OrderScreen(),
+                    const OrderScreen(),
               ),
             ],
           ),
@@ -193,10 +181,43 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             navigatorKey: _shellNavigatorRiskKey,
             routes: <RouteBase>[
               GoRoute(
-                path: AppRoutes.riskManagementList, // Sera /risk-module/list
+                path: AppRoutes.riskManagementList,
                 name: AppRoutes.riskManagementList,
                 builder: (BuildContext context, GoRouterState state) =>
-                const RiskListScreen(),
+                    const RiskListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWatchlistKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.watchlist,
+                name: AppRoutes.watchlist,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WatchlistScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWalletKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.wallet,
+                name: AppRoutes.wallet,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WalletScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWithdrawKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.withdraw,
+                name: AppRoutes.withdraw,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WithdrawalScreen(),
               ),
             ],
           ),
@@ -219,12 +240,12 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const PaymentSelectionScreen(),
         routes: [
           GoRoute(
-            path: AppRoutes.oneTimePayment, //  'one-time' -> /payment-services/one-time
+            path: AppRoutes.oneTimePayment,
             name: AppRoutes.oneTimePayment,
             builder: (context, state) => OneTimePaymentPage(),
           ),
           GoRoute(
-            path: AppRoutes.subscriptionPayment, // 'subscription' -> /payment-services/subscription
+            path: AppRoutes.subscriptionPayment,
             name: AppRoutes.subscriptionPayment,
             builder: (context, state) => SubscriptionPage(),
           ),
@@ -247,7 +268,9 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           final idString = state.pathParameters['riskId'];
           final int? riskId = idString != null ? int.tryParse(idString) : null;
           if (riskId == null) {
-            return _ErrorScreen(message: "ID de risque invalide pour ${state.uri}: '$idString'");
+            return _ErrorScreen(
+                message:
+                    "ID de risque invalide pour ${state.uri}: '$idString'");
           }
           return RiskFormScreen(riskId: riskId);
         },

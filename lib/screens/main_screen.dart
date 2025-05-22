@@ -22,28 +22,20 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
-    // Les écrans sont maintenant gérés par le navigationShell
-    // final List<Widget> _screens = [
-    //   const HomeScreen(),
-    //   const AssetListScreen(), // Votre ancien MarketScreen
-    //   const NewsScreen(),
-    //   const OrderScreen(),
-    //   // Ajoutez ici l'écran pour la liste des risques si vous voulez un onglet dédié
-    //   // const RiskListScreen(), // Exemple
-    // ];
-
+    print(
+        'MainScreen build, current index: ${navigationShell.currentIndex}, branches: ${navigationShell.route.branches.length}');
     return Scaffold(
       appBar: AppBar(
         title: _getTitleForIndex(navigationShell.currentIndex),
-        // Vous pouvez ajouter des actions globales à l'AppBar ici si nécessaire
       ),
-      body: navigationShell, // Affiche le contenu de la branche active
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Pour plus de 3 items
+        type: BottomNavigationBarType.fixed,
         currentIndex: navigationShell.currentIndex,
         onTap: (index) => _onTap(context, index),
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined),
@@ -65,17 +57,31 @@ class MainScreen extends StatelessWidget {
             activeIcon: Icon(Icons.shopping_cart_rounded),
             label: 'Ordres',
           ),
-          BottomNavigationBarItem( // Nouvel onglet pour la Gestion des Risques (Liste)
+          BottomNavigationBarItem(
             icon: Icon(Icons.shield_outlined),
             activeIcon: Icon(Icons.shield_rounded),
             label: 'Risques',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            activeIcon: Icon(Icons.account_balance_wallet_rounded),
+            label: 'Wallet',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star_outlined),
+            activeIcon: Icon(Icons.star_rounded),
+            label: 'Watchlist',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.money_off_outlined),
+            activeIcon: Icon(Icons.money_off_rounded),
+            label: 'Withdrawal',
           ),
         ],
       ),
     );
   }
 
-  // Helper pour obtenir le titre de l'AppBar en fonction de l'onglet actif
   Widget _getTitleForIndex(int index) {
     switch (index) {
       case 0:
@@ -88,6 +94,12 @@ class MainScreen extends StatelessWidget {
         return const Text('Gestion des Ordres');
       case 4:
         return const Text('Gestion des Risques');
+      case 5:
+        return const Text('Portefeuille');
+      case 6:
+        return const Text('Liste de Suivi');
+      case 7:
+        return const Text('Retraits');
       default:
         return const Text('InvestIA');
     }

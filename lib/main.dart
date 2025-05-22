@@ -1,5 +1,8 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:investia/providers/wallet_provider.dart';
+import 'package:investia/providers/watchlist_provider.dart';
+import 'package:investia/providers/withdrawal_provider.dart';
 import 'package:provider/provider.dart' as provider_pkg;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,7 +29,8 @@ Future<void> main() async {
 
   try {
     await dotenv.load(fileName: "assets/.env");
-    print(".env file loaded successfully: ${dotenv.env['API_BASE_URL'] != null ? 'API_BASE_URL found' : 'API_BASE_URL NOT found'}");
+    print(
+        ".env file loaded successfully: ${dotenv.env['API_BASE_URL'] != null ? 'API_BASE_URL found' : 'API_BASE_URL NOT found'}");
   } catch (e) {
     print("Error loading .env file: $e");
   }
@@ -74,8 +78,13 @@ class MyApp extends ConsumerWidget {
       providers: [
         provider_pkg.ChangeNotifierProvider.value(value: authProviderInstance),
         provider_pkg.ChangeNotifierProvider(create: (_) => NewsProvider()),
-        provider_pkg.ChangeNotifierProvider(create: (_) => MarketDataProvider()),
+        provider_pkg.ChangeNotifierProvider(
+            create: (_) => MarketDataProvider()),
         provider_pkg.ChangeNotifierProvider(create: (_) => OrderProvider()),
+        provider_pkg.ChangeNotifierProvider(create: (_) => WalletProvider()),
+        provider_pkg.ChangeNotifierProvider(create: (_) => WatchlistProvider()),
+        provider_pkg.ChangeNotifierProvider(
+            create: (_) => WithdrawalProvider()),
       ],
       child: MaterialApp.router(
         title: 'InvestIA Unified',
@@ -94,35 +103,38 @@ class MyApp extends ConsumerWidget {
               backgroundColor: Colors.indigo.shade700,
               foregroundColor: Colors.white,
               elevation: 2,
-              titleTextStyle: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.w600)
-          ),
+              titleTextStyle: GoogleFonts.poppins(
+                  fontSize: 20, fontWeight: FontWeight.w600)),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.indigo.shade600,
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
-              textStyle: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w600),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              textStyle: GoogleFonts.poppins(
+                  fontSize: 16, fontWeight: FontWeight.w600),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
             ),
           ),
           cardTheme: CardTheme(
             elevation: 1.5,
             margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0)),
           ),
           inputDecorationTheme: InputDecorationTheme(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.indigo.shade400, width: 2),
-                borderRadius: BorderRadius.circular(10)
-            ),
+                borderRadius: BorderRadius.circular(10)),
             labelStyle: GoogleFonts.poppins(),
             hintStyle: GoogleFonts.poppins(color: Colors.grey.shade500),
           ),
           bottomNavigationBarTheme: BottomNavigationBarThemeData(
             selectedItemColor: Colors.indigo.shade700,
             unselectedItemColor: Colors.grey.shade600,
-            selectedLabelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+            selectedLabelStyle:
+                GoogleFonts.poppins(fontWeight: FontWeight.w500),
             unselectedLabelStyle: GoogleFonts.poppins(),
           ),
           chipTheme: ChipThemeData(

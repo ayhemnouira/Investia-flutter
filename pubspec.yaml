@@ -3,7 +3,7 @@ description: Plateforme de Gestion d'Investissement - Invest IA # Description du
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Garder 'none' pour un projet privé
+publish_to: "none" # Garder 'none' pour un projet privé
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -49,6 +49,8 @@ dependencies:
 
   # === Dépendance pour afficher les images en cache (utilisé dans Module External Data) ===
   cached_network_image: ^3.3.1 # Images depuis le réseau avec cache
+  flutter_spinkit: ^5.2.1
+  syncfusion_flutter_charts: ^29.2.5
 
   # === Dépendances Module Ordres & Rééquilibrage (d'Amira) ===
   # Aucune dépendance nouvelle d'après son pubspec.yaml partagé.
@@ -56,15 +58,13 @@ dependencies:
 
   # === Dépendances Module Gestion des Risques (d'Olsen) ===
   flutter_riverpod: ^2.5.3 # <-- AJOUTÉ : Gestion d'état Riverpod
-  go_router: ^15.0.3       # <-- AJOUTÉ : Routage GoRouter
-  fl_chart: ^0.69.0        # <-- AJOUTÉ : Graphiques
+  go_router: ^15.0.3 # <-- AJOUTÉ : Routage GoRouter
+  fl_chart: ^0.69.0 # <-- AJOUTÉ : Graphiques
   freezed_annotation: ^2.4.4 # <-- AJOUTÉ : Annotations Freezed
-
 
   # === Dépendances Optionnelles (reste commenté si non utilisé globalement) ===
   connectivity_plus: ^6.0.3
   url_launcher: ^6.2.2
-
 
 dev_dependencies:
   flutter_test:
@@ -78,8 +78,7 @@ dev_dependencies:
   build_runner: ^2.4.9 # <-- EXISTANT : Outil pour lancer les générateurs (compatible avec les versions plus récentes)
 
   # === Dépendances de développement pour Freezed (Module Risque) ===
-  freezed: ^2.5.3           # <-- AJOUTÉ : Générateur Freezed
-
+  freezed: ^2.5.3 # <-- AJOUTÉ : Générateur Freezed
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -94,7 +93,6 @@ flutter:
     - assets/images/fd.jpg
     # Ajoutez ici d'autres assets si les autres modules en utilisent (Module Risque, Module Ordre)
     # - assets/images/risk_icon.png # Exemple si le module risque avait une image spécifique
-
 
   uses-material-design: true
 
