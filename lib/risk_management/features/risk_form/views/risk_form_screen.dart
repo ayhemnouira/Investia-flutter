@@ -26,11 +26,21 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
   int? _selectedImpact;
   int? _selectedProbability;
   bool get _isEditMode => widget.riskId != null;
-  String get _pageTitle => _isEditMode ? 'Modifier le Risque #${widget.riskId}' : 'Ajouter un Risque';
+  String get _pageTitle => _isEditMode
+      ? 'Modifier le Risque #${widget.riskId}'
+      : 'Ajouter un Risque';
   bool _isSubmitting = false;
   bool _initialDataLoaded = false;
 
-  final List<String> _categories = const ['Financier', 'Opérationnel', 'Stratégique', 'Conformité', 'Cybersécurité', 'Ressources Humaines', 'Autre'];
+  final List<String> _categories = const [
+    'Financier',
+    'Opérationnel',
+    'Stratégique',
+    'Conformité',
+    'Cybersécurité',
+    'Ressources Humaines',
+    'Autre'
+  ];
   final List<int> _impactLevels = const [1, 2, 3, 4, 5];
   final List<int> _probabilityLevels = const [1, 2, 3, 4, 5];
 
@@ -65,8 +75,11 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
           category: _selectedCategory!,
           impact: _selectedImpact!,
           probability: _selectedProbability!,
-          owner: _ownerController.text.isNotEmpty ? _ownerController.text : null,
-          mitigationPlan: _mitigationController.text.isNotEmpty ? _mitigationController.text : null);
+          owner:
+              _ownerController.text.isNotEmpty ? _ownerController.text : null,
+          mitigationPlan: _mitigationController.text.isNotEmpty
+              ? _mitigationController.text
+              : null);
       print("RiskFormScreen: Soumission du formulaire avec: $riskData");
       try {
         final riskService = ref.read(core_services.riskServiceProvider);
@@ -81,7 +94,8 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
         ref.invalidate(riskListProvider);
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Risque ${_isEditMode ? 'mis à jour' : 'ajouté'} avec succès!')));
+              content: Text(
+                  'Risque ${_isEditMode ? 'mis à jour' : 'ajouté'} avec succès!')));
           context.pop();
         }
       } catch (e) {
@@ -108,7 +122,9 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
     final theme = Theme.of(context);
     final initialDataAsync = ref.watch(riskFormProvider(widget.riskId));
 
-    if (_isEditMode && initialDataAsync is AsyncData<Risk?> && !_initialDataLoaded) {
+    if (_isEditMode &&
+        initialDataAsync is AsyncData<Risk?> &&
+        !_initialDataLoaded) {
       final initialRisk = initialDataAsync.value;
       if (initialRisk != null) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -131,12 +147,14 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageTitle),
-        backgroundColor: theme.colorScheme.primaryContainer, // Couleur d'arrière-plan de l'AppBar
-        foregroundColor: theme.colorScheme.onPrimaryContainer, // Couleur du texte de l'AppBar
+        backgroundColor: theme
+            .colorScheme.primaryContainer, // Couleur d'arrière-plan de l'AppBar
+        foregroundColor: theme
+            .colorScheme.onPrimaryContainer, // Couleur du texte de l'AppBar
         elevation: 2,
         shadowColor: Colors.black.withOpacity(0.1),
       ),
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
@@ -146,7 +164,8 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                if (_isEditMode && (initialDataAsync.isLoading || initialDataAsync.hasError))
+                if (_isEditMode &&
+                    (initialDataAsync.isLoading || initialDataAsync.hasError))
                   initialDataAsync.when(
                     data: (_) => const SizedBox.shrink(),
                     loading: () => const Padding(
@@ -156,10 +175,10 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 20.0),
                         child: Center(
                             child: Text(
-                              "Erreur chargement données initiales:\n$err",
-                              style: TextStyle(color: theme.colorScheme.error),
-                              textAlign: TextAlign.center,
-                            ))),
+                          "Erreur chargement données initiales:\n$err",
+                          style: TextStyle(color: theme.colorScheme.error),
+                          textAlign: TextAlign.center,
+                        ))),
                   )
                 else
                   _buildFormContent(context, theme),
@@ -167,39 +186,49 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
                 _isSubmitting
                     ? const Center(child: CircularProgressIndicator())
                     : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    ElevatedButton.icon(
-                      icon: Icon(_isEditMode ? Icons.save_rounded : Icons.add_task_rounded),
-                      label: Text(_isEditMode ? 'Enregistrer les modifications' : 'Ajouter le risque',
-                          style: const TextStyle(fontWeight: FontWeight.w600)),
-                      onPressed: _submitForm,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 3,
-                        shadowColor: theme.colorScheme.primary.withOpacity(0.3),
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          ElevatedButton.icon(
+                            icon: Icon(_isEditMode
+                                ? Icons.save_rounded
+                                : Icons.add_task_rounded),
+                            label: Text(
+                                _isEditMode
+                                    ? 'Enregistrer les modifications'
+                                    : 'Ajouter le risque',
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600)),
+                            onPressed: _submitForm,
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: theme.colorScheme.primary,
+                              foregroundColor: theme.colorScheme.onPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 3,
+                              shadowColor:
+                                  theme.colorScheme.primary.withOpacity(0.3),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          OutlinedButton(
+                            onPressed: () => context.pop(),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              side:
+                                  BorderSide(color: theme.colorScheme.outline),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              foregroundColor:
+                                  theme.colorScheme.onSurfaceVariant,
+                            ),
+                            child: const Text('Annuler',
+                                style: TextStyle(fontWeight: FontWeight.w500)),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    OutlinedButton(
-                      child: const Text('Annuler', style: TextStyle(fontWeight: FontWeight.w500)),
-                      onPressed: () => context.pop(),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: BorderSide(color: theme.colorScheme.outline),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        foregroundColor: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
@@ -213,7 +242,8 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Identification du Risque",
-            style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
+            style: theme.textTheme.titleLarge
+                ?.copyWith(color: theme.colorScheme.primary)),
         const SizedBox(height: 12),
         _buildTextFormField(
           controller: _nameController,
@@ -244,7 +274,10 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
           value: _selectedCategory,
           labelText: 'Catégorie *',
           prefixIcon: const Icon(Icons.category_outlined),
-          items: _categories.map((String category) => DropdownMenuItem<String>(value: category, child: Text(category))).toList(),
+          items: _categories
+              .map((String category) => DropdownMenuItem<String>(
+                  value: category, child: Text(category)))
+              .toList(),
           onChanged: (newValue) {
             setState(() {
               _selectedCategory = newValue;
@@ -253,7 +286,9 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
           validator: (value) => value == null ? 'Catégorie requise.' : null,
         ),
         const SizedBox(height: 24),
-        Text("Évaluation", style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
+        Text("Évaluation",
+            style: theme.textTheme.titleLarge
+                ?.copyWith(color: theme.colorScheme.primary)),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -264,7 +299,8 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
                 prefixIcon: const Icon(Icons.show_chart_rounded),
                 items: _impactLevels
                     .map((int level) => DropdownMenuItem<int>(
-                    value: level, child: Text('$level - ${_getImpactLabel(level)}')))
+                        value: level,
+                        child: Text('$level - ${_getImpactLabel(level)}')))
                     .toList(),
                 onChanged: (newValue) {
                   setState(() {
@@ -282,21 +318,24 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
                 prefixIcon: const Icon(Icons.percent_rounded),
                 items: _probabilityLevels
                     .map((int level) => DropdownMenuItem<int>(
-                    value: level, child: Text('$level - ${_getProbabilityLabel(level)}')))
+                        value: level,
+                        child: Text('$level - ${_getProbabilityLabel(level)}')))
                     .toList(),
                 onChanged: (newValue) {
                   setState(() {
                     _selectedProbability = newValue;
                   });
                 },
-                validator: (value) => value == null ? 'Probabilité requise.' : null,
+                validator: (value) =>
+                    value == null ? 'Probabilité requise.' : null,
               ),
             ),
           ],
         ),
         const SizedBox(height: 24),
         Text("Informations Supplémentaires",
-            style: theme.textTheme.titleLarge?.copyWith(color: theme.colorScheme.primary)),
+            style: theme.textTheme.titleLarge
+                ?.copyWith(color: theme.colorScheme.primary)),
         const SizedBox(height: 12),
         _buildTextFormField(
           controller: _ownerController,
@@ -312,7 +351,8 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
           prefixIcon: const Icon(Icons.healing_outlined),
           maxLines: 3,
           validator: (value) {
-            if (value != null && value.length > 1000) return 'Max 1000 caractères.';
+            if (value != null && value.length > 1000)
+              return 'Max 1000 caractères.';
             return null;
           },
         ),
@@ -336,10 +376,18 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
         labelText: labelText,
         hintText: hintText,
         prefixIcon: prefixIcon,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.outline)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.primary)),
-        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.error)),
-        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.error)),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.outline)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.primary)),
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.error)),
+        focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.error)),
       ),
       maxLines: maxLines,
       validator: validator,
@@ -360,10 +408,18 @@ class _RiskFormScreenState extends ConsumerState<RiskFormScreen> {
       decoration: InputDecoration(
         labelText: labelText,
         prefixIcon: prefixIcon,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.outline)),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.primary)),
-        errorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.error)),
-        focusedErrorBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide(color: theme.colorScheme.error)),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.outline)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.primary)),
+        errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.error)),
+        focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: theme.colorScheme.error)),
       ),
       items: items,
       onChanged: onChanged,

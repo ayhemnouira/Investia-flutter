@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:investia/providers/market_data_provider.dart';
 import 'package:provider/provider.dart';
 
-
 class AssetDetailScreen extends StatefulWidget {
-  final String assetId; // L'ID de l'actif CoinGecko (passé via les arguments de route)
+  final String
+      assetId; // L'ID de l'actif CoinGecko (passé via les arguments de route)
 
-  const AssetDetailScreen({Key? key, required this.assetId}) : super(key: key);
+  const AssetDetailScreen({super.key, required this.assetId});
 
   @override
   State<AssetDetailScreen> createState() => _AssetDetailScreenState();
@@ -19,12 +19,13 @@ class _AssetDetailScreenState extends State<AssetDetailScreen> {
   @override
   void initState() {
     super.initState();
-     // ** CORRECTION : Obtient la référence du provider ici (listen: false) **
-     _marketDataProvider = Provider.of<MarketDataProvider>(context, listen: false);
+    // ** CORRECTION : Obtient la référence du provider ici (listen: false) **
+    _marketDataProvider =
+        Provider.of<MarketDataProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Utilise la référence stockée pour appeler la méthode du provider
-       _marketDataProvider.startFetchingSingleAsset(widget.assetId);
+      // Utilise la référence stockée pour appeler la méthode du provider
+      _marketDataProvider.startFetchingSingleAsset(widget.assetId);
     });
   }
 
@@ -38,7 +39,7 @@ class _AssetDetailScreenState extends State<AssetDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-     // Écoute toujours le provider ici pour la reconstruction de l'UI
+    // Écoute toujours le provider ici pour la reconstruction de l'UI
     final provider = Provider.of<MarketDataProvider>(context);
     // Accède aux données via le provider écouté dans build
     final asset = provider.getLiveAssetPrice(widget.assetId);
@@ -46,49 +47,52 @@ class _AssetDetailScreenState extends State<AssetDetailScreen> {
     Widget content;
 
     if (provider.isLoadingSingleAsset && asset == null) {
-       content = const CircularProgressIndicator();
+      content = const CircularProgressIndicator();
     } else if (provider.errorMessageSingleAsset != null) {
-       content = Padding(
-         padding: const EdgeInsets.all(16.0),
-         child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 50),
-              const SizedBox(height: 10),
-              Text(
-                 provider.errorMessageSingleAsset!,
-                 textAlign: TextAlign.center,
-                 style: const TextStyle(color: Colors.red, fontSize: 16),
+      content = Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.red, size: 50),
+            const SizedBox(height: 10),
+            Text(
+              provider.errorMessageSingleAsset!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.red, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            if (!provider.isLoadingSingleAsset && asset == null)
+              ElevatedButton(
+                // ** CORRECTION : Utilise la référence stockée pour appeler startFetchingSingleAsset **
+                onPressed: () => _marketDataProvider
+                    .startFetchingSingleAsset(widget.assetId),
+                child: const Text("Réessayer"),
               ),
-               const SizedBox(height: 20),
-               if (!provider.isLoadingSingleAsset && asset == null)
-                 ElevatedButton(
-                    // ** CORRECTION : Utilise la référence stockée pour appeler startFetchingSingleAsset **
-                    onPressed: () => _marketDataProvider.startFetchingSingleAsset(widget.assetId),
-                    child: const Text("Réessayer"),
-                 ),
-            ],
-          ),
-       );
+          ],
+        ),
+      );
     } else if (asset == null) {
-       content = Center(child: Text("Données non disponibles pour ${widget.assetId}"));
-    }
-    else {
-      final Color changeColor = asset.priceChange24h >= 0 ? Colors.green : Colors.red;
-      final IconData changeIcon = asset.priceChange24h >= 0 ? Icons.arrow_upward : Icons.arrow_downward;
+      content =
+          Center(child: Text("Données non disponibles pour ${widget.assetId}"));
+    } else {
+      final Color changeColor =
+          asset.priceChange24h >= 0 ? Colors.green : Colors.red;
+      final IconData changeIcon =
+          asset.priceChange24h >= 0 ? Icons.arrow_upward : Icons.arrow_downward;
 
       content = Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-           if (asset.imageUrl.isNotEmpty) ...[
-             CircleAvatar(
-                radius: 40,
-                backgroundImage: NetworkImage(asset.imageUrl),
-                backgroundColor: Colors.transparent,
-             ),
-             const SizedBox(height: 16),
-           ],
+          if (asset.imageUrl.isNotEmpty) ...[
+            CircleAvatar(
+              radius: 40,
+              backgroundImage: NetworkImage(asset.imageUrl),
+              backgroundColor: Colors.transparent,
+            ),
+            const SizedBox(height: 16),
+          ],
           Text(
             asset.name,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -103,27 +107,28 @@ class _AssetDetailScreenState extends State<AssetDetailScreen> {
             style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
           ),
           Row(
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               Icon(changeIcon, color: changeColor, size: 24),
-               const SizedBox(width: 8),
-               Text(
-                 "${asset.priceChange24h.toStringAsFixed(2)} (${asset.priceChangePercentage24h.toStringAsFixed(2)}%)",
-                 style: TextStyle(
-                   fontSize: 24,
-                   color: changeColor,
-                   fontWeight: FontWeight.bold,
-                 ),
-               ),
-             ],
-           ),
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(changeIcon, color: changeColor, size: 24),
+              const SizedBox(width: 8),
+              Text(
+                "${asset.priceChange24h.toStringAsFixed(2)} (${asset.priceChangePercentage24h.toStringAsFixed(2)}%)",
+                style: TextStyle(
+                  fontSize: 24,
+                  color: changeColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ],
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(asset?.name ?? asset?.symbol.toUpperCase() ?? widget.assetId),
+        title:
+            Text(asset?.name ?? asset?.symbol.toUpperCase() ?? widget.assetId),
       ),
       body: Center(child: content),
     );

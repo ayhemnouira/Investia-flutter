@@ -12,24 +12,27 @@ class NewsArticleCard extends StatelessWidget {
   final VoidCallback? onTap;
 
   const NewsArticleCard({
-    Key? key,
+    super.key,
     required this.newsArticle,
     this.onTap, // Rend le onTap optionnel
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     // Utilise un Card pour une meilleure présentation visuelle,
     // et un ListTile à l'intérieur.
     return Card(
-       margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Marges cohérentes
-       elevation: 2.0,
-       shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(8.0),
-       ),
-      child: InkWell( // Rend la carte cliquable avec un effet visuel (ripple effect)
+      margin: const EdgeInsets.symmetric(
+          horizontal: 16.0, vertical: 8.0), // Marges cohérentes
+      elevation: 2.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: InkWell(
+        // Rend la carte cliquable avec un effet visuel (ripple effect)
         onTap: onTap, // Gère le tap via le callback passé
-        child: Padding( // Ajoute un peu de padding à l'intérieur de la carte
+        child: Padding(
+          // Ajoute un peu de padding à l'intérieur de la carte
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +44,8 @@ class NewsArticleCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 4), // Petit espace entre titre et date/summary
+              const SizedBox(
+                  height: 4), // Petit espace entre titre et date/summary
               Text(
                 // Formate la date pour un meilleur affichage
                 "Date: ${DateFormat('yyyy-MM-dd').format(newsArticle.date)}",
@@ -55,7 +59,8 @@ class NewsArticleCard extends StatelessWidget {
                 // **CORRECTION : Utilise newsArticle.summary**
                 newsArticle.summary,
                 maxLines: 3, // Limite le nombre de lignes pour le résumé
-                overflow: TextOverflow.ellipsis, // Ajoute "..." si le texte est trop long
+                overflow: TextOverflow
+                    .ellipsis, // Ajoute "..." si le texte est trop long
                 style: const TextStyle(
                   fontSize: 14,
                 ),

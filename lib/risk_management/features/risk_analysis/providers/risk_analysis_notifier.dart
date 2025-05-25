@@ -14,14 +14,16 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
 
   // Constructeur : initialise l'état initial et reçoit les dépendances
   RiskAnalysisNotifier(this._ref)
-      : _apiService = _ref.read(apiServiceProvider), // Lit l'instance d'ApiService
+      : _apiService =
+            _ref.read(apiServiceProvider), // Lit l'instance d'ApiService
         super(const RiskAnalysisState()); // État initial vide (ou avec défauts)
 
   // --- Méthodes pour mettre à jour les entrées utilisateur ---
 
   void setSymbol(String newSymbol) {
     // Crée une nouvelle copie de l'état avec le symbole mis à jour
-    state = state.copyWith(symbol: newSymbol.toUpperCase()); // Met en majuscules
+    state =
+        state.copyWith(symbol: newSymbol.toUpperCase()); // Met en majuscules
   }
 
   void setSelectedDomains(List<String> domains) {
@@ -33,22 +35,23 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
     print("Indicateurs sélectionnés: $indicators");
   }
 
-
   // --- Méthode principale pour charger et analyser les données ---
   Future<void> loadAndAnalyzeData() async {
     // Vérifie si le symbole est vide
     if (state.symbol.trim().isEmpty) {
-      state = state.copyWith(errorMessage: "Veuillez entrer un symbole boursier.");
+      state =
+          state.copyWith(errorMessage: "Veuillez entrer un symbole boursier.");
       return;
     }
     // Vérifie si au moins un indicateur est sélectionné (ou adapter la logique)
     if (state.selectedIndicators.isEmpty) {
-      state = state.copyWith(errorMessage: "Veuillez sélectionner au moins un indicateur.");
+      state = state.copyWith(
+          errorMessage: "Veuillez sélectionner au moins un indicateur.");
       return;
     }
 
-
-    print('RiskAnalysisNotifier: Début loadAndAnalyzeData pour ${state.symbol}');
+    print(
+        'RiskAnalysisNotifier: Début loadAndAnalyzeData pour ${state.symbol}');
     // Met à jour l'état pour indiquer le chargement et réinitialiser les erreurs/résultats
     state = state.copyWith(
       isLoading: true,
@@ -72,7 +75,6 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
 
       // Appel pour les prix (toujours ?) - À adapter si ce n'est pas le cas
       apiCalls['price'] = _apiService.getPriceData(state.symbol);
-
 
       // Ajoute les appels pour les indicateurs sélectionnés
       if (state.selectedIndicators.contains('volatility')) {
@@ -101,7 +103,8 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
         apiResults[keys[i]] = results[i];
       }
 
-      print('RiskAnalysisNotifier: Tous les appels API terminés pour ${state.symbol}');
+      print(
+          'RiskAnalysisNotifier: Tous les appels API terminés pour ${state.symbol}');
 
       // Mettre à jour l'état avec les données reçues
       state = state.copyWith(
@@ -118,20 +121,26 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
 
       // Effectuer l'analyse des risques (méthode séparée pour la clarté)
       _performRiskAnalysis();
-
     } catch (e) {
-      print('RiskAnalysisNotifier: Erreur lors du chargement des données API: $e');
+      print(
+          'RiskAnalysisNotifier: Erreur lors du chargement des données API: $e');
       // Gérer les erreurs spécifiques (ex: limite API)
       bool limitExceeded = false;
       String errorMsg = e.toString();
-      if (e is Exception && e.toString().toLowerCase().contains('api key daily rate limit reached')) {
+      if (e is Exception &&
+          e
+              .toString()
+              .toLowerCase()
+              .contains('api key daily rate limit reached')) {
         limitExceeded = true;
-        errorMsg = "Limite d'utilisation de l'API atteinte. Veuillez réessayer plus tard.";
-      } else if (e is Exception && e.toString().contains('response.statusCode == 404')) {
-        errorMsg = "Symbole '${state.symbol}' non trouvé ou données indisponibles.";
+        errorMsg =
+            "Limite d'utilisation de l'API atteinte. Veuillez réessayer plus tard.";
+      } else if (e is Exception &&
+          e.toString().contains('response.statusCode == 404')) {
+        errorMsg =
+            "Symbole '${state.symbol}' non trouvé ou données indisponibles.";
       }
       // ... autres gestions d'erreurs possibles ...
-
 
       state = state.copyWith(
         errorMessage: errorMsg,
@@ -145,7 +154,6 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
     }
   }
 
-
   // --- Méthode privée pour analyser les données reçues ---
   void _performRiskAnalysis() {
     print('RiskAnalysisNotifier: Début _performRiskAnalysis');
@@ -158,7 +166,8 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
       try {
         // Attention: L'API retourne les plus récents en premier
         final lastRsiValue = rsiValues.first['rsi'];
-        if (lastRsiValue is num) { // Vérifie si c'est un nombre
+        if (lastRsiValue is num) {
+          // Vérifie si c'est un nombre
           if (lastRsiValue > 70) {
             calculatedRiskLevel = 'Élevé';
             factors.add('RSI élevé (> 70) indiquant une possible surachat.');
@@ -167,14 +176,14 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
             factors.add('RSI faible (< 30) indiquant une possible survente.');
           } else {
             // Si le niveau n'est pas déjà Élevé/Faible, on le met à Modéré
-            if (calculatedRiskLevel == 'Non disponible') calculatedRiskLevel = 'Modéré';
+            if (calculatedRiskLevel == 'Non disponible')
+              calculatedRiskLevel = 'Modéré';
             factors.add('RSI dans la zone neutre (30-70).');
           }
         } else {
           factors.add('Donnée RSI invalide reçue.');
-          print('RiskAnalysisNotifier: Donnée RSI invalide: ${lastRsiValue}');
+          print('RiskAnalysisNotifier: Donnée RSI invalide: $lastRsiValue');
         }
-
       } catch (e) {
         factors.add('Erreur analyse RSI: $e');
         print('RiskAnalysisNotifier: Erreur analyse RSI: $e');
@@ -182,7 +191,6 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
     } else if (state.selectedIndicators.contains('rsi')) {
       factors.add('Données RSI non disponibles.');
     }
-
 
     // --- Analyse Volatilité (ATR) ---
     final atrValues = state.volatilityData?['values'] as List?;
@@ -210,11 +218,9 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
 
           // Simplifions encore : on se base QUE sur RSI pour le niveau global pour l'instant
           factors.add('Volatilité (ATR) présente.');
-
-
         } else {
           factors.add('Donnée ATR invalide reçue.');
-          print('RiskAnalysisNotifier: Donnée ATR invalide: ${lastAtrValue}');
+          print('RiskAnalysisNotifier: Donnée ATR invalide: $lastAtrValue');
         }
       } catch (e) {
         factors.add('Erreur analyse Volatilité: $e');
@@ -227,26 +233,29 @@ class RiskAnalysisNotifier extends StateNotifier<RiskAnalysisState> {
     // --- Autres analyses (SMA, EMA, MACD) ---
     // Ajouter ici la logique si nécessaire, basée sur les croisements, niveaux, etc.
     // Ex: Si MACD < Ligne Signal, facteur de risque baissier, etc.
-    if (state.selectedIndicators.contains('sma') && state.smaData != null) factors.add('SMA présente.');
-    if (state.selectedIndicators.contains('ema') && state.emaData != null) factors.add('EMA présente.');
-    if (state.selectedIndicators.contains('macd') && state.macdData != null) factors.add('MACD présent.');
-
+    if (state.selectedIndicators.contains('sma') && state.smaData != null)
+      factors.add('SMA présente.');
+    if (state.selectedIndicators.contains('ema') && state.emaData != null)
+      factors.add('EMA présente.');
+    if (state.selectedIndicators.contains('macd') && state.macdData != null)
+      factors.add('MACD présent.');
 
     // Met à jour l'état final avec les résultats de l'analyse
     state = state.copyWith(
       riskLevel: calculatedRiskLevel,
       riskFactors: factors,
     );
-    print('RiskAnalysisNotifier: Fin _performRiskAnalysis. Niveau: $calculatedRiskLevel, Facteurs: $factors');
+    print(
+        'RiskAnalysisNotifier: Fin _performRiskAnalysis. Niveau: $calculatedRiskLevel, Facteurs: $factors');
   }
-
 } // Fin RiskAnalysisNotifier
-
 
 // --- Configuration Riverpod ---
 // StateNotifierProvider gère une instance de notre RiskAnalysisNotifier
 // et expose son état (RiskAnalysisState).
-final riskAnalysisNotifierProvider = StateNotifierProvider.autoDispose<RiskAnalysisNotifier, RiskAnalysisState>((ref) {
+final riskAnalysisNotifierProvider =
+    StateNotifierProvider.autoDispose<RiskAnalysisNotifier, RiskAnalysisState>(
+        (ref) {
   // Crée l'instance du Notifier en lui passant la référence Riverpod
   return RiskAnalysisNotifier(ref);
 });

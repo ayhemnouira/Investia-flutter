@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 
 class SubscriptionPage extends StatefulWidget {
+  const SubscriptionPage({super.key});
+
   @override
   _SubscriptionPageState createState() => _SubscriptionPageState();
 }
@@ -27,7 +28,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 style: TextStyle(fontSize: 16)),
             SizedBox(height: 30),
             Text("Choose your payment plan", style: TextStyle(fontSize: 18)),
-            Text("60% OFF when you upgrade to annual plan.", style: TextStyle(color: Colors.grey)),
+            Text("60% OFF when you upgrade to annual plan.",
+                style: TextStyle(color: Colors.grey)),
             SizedBox(height: 10),
             RadioListTile(
               value: "monthly-subscription",
@@ -38,7 +40,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 });
               },
               title: Text("Monthly \$100.00"),
-              subtitle: Text("Pay \$100.00 every month and get access to all premium features."),
+              subtitle: Text(
+                  "Pay \$100.00 every month and get access to all premium features."),
             ),
             RadioListTile(
               value: "annual-subscription",
@@ -52,16 +55,23 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                 children: [
                   Text("Yearly \$800.00"),
                   SizedBox(width: 8),
-                  Chip(label: Text("60% OFF"), backgroundColor: Colors.blue, labelStyle: TextStyle(color: Colors.white))
+                  Chip(
+                      label: Text("60% OFF"),
+                      backgroundColor: Colors.blue,
+                      labelStyle: TextStyle(color: Colors.white))
                 ],
               ),
-              subtitle: Text("Pay \$800.00 every year and get access to all premium features."),
+              subtitle: Text(
+                  "Pay \$800.00 every year and get access to all premium features."),
             ),
-             TextField(decoration: InputDecoration(labelText: "Credit card number")),
+            TextField(
+                decoration: InputDecoration(labelText: "Credit card number")),
             TextField(decoration: InputDecoration(labelText: "MM/AA")),
             TextField(decoration: InputDecoration(labelText: "CVC")),
             TextField(decoration: InputDecoration(labelText: "Email Address")),
-            TextField(decoration: InputDecoration(labelText: "Coupon code (optional)")),
+            TextField(
+                decoration:
+                    InputDecoration(labelText: "Coupon code (optional)")),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
@@ -82,7 +92,6 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: Text("Pay With Your Card"),
             ),
-
             SizedBox(height: 10),
             Text(
               "Pay securely with Stripe. By clicking the button above, you agree to our Terms of Service, Privacy and Refund policies.",
@@ -90,7 +99,8 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            Text("An example project by IKentreprise", style: TextStyle(color: Colors.grey)),
+            Text("An example project by IKentreprise",
+                style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),

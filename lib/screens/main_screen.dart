@@ -8,9 +8,9 @@ class MainScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   const MainScreen({
-    Key? key,
+    super.key,
     required this.navigationShell,
-  }) : super(key: key);
+  });
 
   void _onTap(BuildContext context, int index) {
     // Utilise navigationShell.goBranch pour naviguer vers la branche correspondante
@@ -22,6 +22,7 @@ class MainScreen extends StatelessWidget {
     );
   }
 
+  @override
   Widget build(BuildContext context) {
     print(
         'MainScreen build, current index: ${navigationShell.currentIndex}, branches: ${navigationShell.route.branches.length}');
@@ -63,14 +64,14 @@ class MainScreen extends StatelessWidget {
             label: 'Risques',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet_outlined),
-            activeIcon: Icon(Icons.account_balance_wallet_rounded),
-            label: 'Wallet',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.star_outlined),
             activeIcon: Icon(Icons.star_rounded),
             label: 'Watchlist',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet_outlined),
+            activeIcon: Icon(Icons.account_balance_wallet_rounded),
+            label: 'Wallet',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.money_off_outlined),
@@ -95,9 +96,9 @@ class MainScreen extends StatelessWidget {
       case 4:
         return const Text('Gestion des Risques');
       case 5:
-        return const Text('Portefeuille');
-      case 6:
         return const Text('Liste de Suivi');
+      case 6:
+        return const Text('Portefeuille');
       case 7:
         return const Text('Retraits');
       default:

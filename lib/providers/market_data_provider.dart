@@ -7,7 +7,8 @@ class MarketDataProvider with ChangeNotifier {
   final DataService _dataService = DataService();
 
   List<Asset> _assets = []; // Liste pour la watchlist/marché global
-  Map<String, Asset> _livePrices = {}; // Stocke les prix des actifs qu'on suit en temps réel (par ID)
+  final Map<String, Asset> _livePrices =
+      {}; // Stocke les prix des actifs qu'on suit en temps réel (par ID)
   bool _isLoadingAssets = false;
   bool _isLoadingSingleAsset = false;
   String? _errorMessageAssets;
@@ -21,10 +22,10 @@ class MarketDataProvider with ChangeNotifier {
   String? get errorMessageAssets => _errorMessageAssets;
 
   // Getter pour les données d'un seul actif suivies en temps réel (utilise l'ID)
-  Asset? getLiveAssetPrice(String assetId) => _livePrices[assetId.toLowerCase()]; // Stocke par ID en minuscule
+  Asset? getLiveAssetPrice(String assetId) =>
+      _livePrices[assetId.toLowerCase()]; // Stocke par ID en minuscule
   bool get isLoadingSingleAsset => _isLoadingSingleAsset;
   String? get errorMessageSingleAsset => _errorMessageSingleAsset;
-
 
   // --- Méthodes pour la liste d'actifs (Watchlist) ---
 
@@ -45,7 +46,6 @@ class MarketDataProvider with ChangeNotifier {
     }
   }
 
-
   // --- Méthodes pour un seul actif (Détail et Temps Réel) ---
 
   // Commence le chargement initial et le polling pour un actif spécifique (par son ID CoinGecko)
@@ -54,15 +54,15 @@ class MarketDataProvider with ChangeNotifier {
 
     // Si on poll déjà cet actif, on ne fait rien
     if (_currentPollingAssetId == lowerCaseId) {
-       print("Already polling $lowerCaseId");
-       // S'il y a déjà des données, notifier quand même au cas où l'UI a besoin de se mettre à jour
-       if (_livePrices.containsKey(lowerCaseId)) {
-          notifyListeners();
-       }
-       return;
+      print("Already polling $lowerCaseId");
+      // S'il y a déjà des données, notifier quand même au cas où l'UI a besoin de se mettre à jour
+      if (_livePrices.containsKey(lowerCaseId)) {
+        notifyListeners();
+      }
+      return;
     }
 
-     // Arrête le timer précédent s'il existe
+    // Arrête le timer précédent s'il existe
     stopFetchingSingleAsset();
 
     _currentPollingAssetId = lowerCaseId; // Définit l'ID qu'on va suivre
@@ -77,39 +77,42 @@ class MarketDataProvider with ChangeNotifier {
     try {
       // Appel à la méthode du service qui utilise l'ID
       final initialAsset = await _dataService.fetchAssetPrice(lowerCaseId);
-      _livePrices[lowerCaseId] = initialAsset; // Stocke la première donnée reçue par ID
+      _livePrices[lowerCaseId] =
+          initialAsset; // Stocke la première donnée reçue par ID
       _errorMessageSingleAsset = null;
-       print("Initial price fetched for $lowerCaseId: ${initialAsset.currentPrice}");
+      print(
+          "Initial price fetched for $lowerCaseId: ${initialAsset.currentPrice}");
 
-       // 2. Démarre le polling (mise à jour toutes les 5 secondes)
-       _pollingTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-         try {
-           // Récupère la mise à jour (réappelle la même méthode)
-           final updatedAsset = await _dataService.fetchAssetPrice(lowerCaseId);
+      // 2. Démarre le polling (mise à jour toutes les 5 secondes)
+      _pollingTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+        try {
+          // Récupère la mise à jour (réappelle la même méthode)
+          final updatedAsset = await _dataService.fetchAssetPrice(lowerCaseId);
 
-           // Met à jour l'Asset dans _livePrices
-           _livePrices[lowerCaseId] = updatedAsset; // Remplace l'ancien objet par le nouveau
+          // Met à jour l'Asset dans _livePrices
+          _livePrices[lowerCaseId] =
+              updatedAsset; // Remplace l'ancien objet par le nouveau
 
-           _errorMessageSingleAsset = null; // Efface l'erreur si une mise à jour réussit
+          _errorMessageSingleAsset =
+              null; // Efface l'erreur si une mise à jour réussit
 
-           // print("Polling update for $lowerCaseId: ${_livePrices[lowerCaseId]!.currentPrice}");
-           notifyListeners(); // Notifie les listeners (l'écran de détail)
-
-         } catch (e) {
-           // Gérer les erreurs de mise à jour sans arrêter tout le polling
-           print("Error during polling for $lowerCaseId: ${e.toString()}");
-           // Optionnel: Mettre à jour une variable d'état d'erreur de polling si tu veux l'afficher subtilement
-           // _errorMessageSingleAsset = "Update error: ${e.toString()}";
-           // notifyListeners(); // Si tu veux afficher l'erreur de mise à jour
-         }
-       });
-
+          // print("Polling update for $lowerCaseId: ${_livePrices[lowerCaseId]!.currentPrice}");
+          notifyListeners(); // Notifie les listeners (l'écran de détail)
+        } catch (e) {
+          // Gérer les erreurs de mise à jour sans arrêter tout le polling
+          print("Error during polling for $lowerCaseId: ${e.toString()}");
+          // Optionnel: Mettre à jour une variable d'état d'erreur de polling si tu veux l'afficher subtilement
+          // _errorMessageSingleAsset = "Update error: ${e.toString()}";
+          // notifyListeners(); // Si tu veux afficher l'erreur de mise à jour
+        }
+      });
     } catch (e) {
       // Gérer l'erreur du chargement initial
-      _errorMessageSingleAsset = "Failed to load initial price for $lowerCaseId: ${e.toString()}";
-      _livePrices.remove(lowerCaseId); // Assure que l'actif n'est pas affiché s'il y a une erreur initiale
-       print(_errorMessageSingleAsset);
-
+      _errorMessageSingleAsset =
+          "Failed to load initial price for $lowerCaseId: ${e.toString()}";
+      _livePrices.remove(
+          lowerCaseId); // Assure que l'actif n'est pas affiché s'il y a une erreur initiale
+      print(_errorMessageSingleAsset);
     } finally {
       _isLoadingSingleAsset = false; // Le chargement initial est terminé
       notifyListeners(); // Notifie l'état final du chargement initial (succès ou échec)
@@ -121,18 +124,17 @@ class MarketDataProvider with ChangeNotifier {
     _pollingTimer?.cancel(); // Annule le timer s'il existe
     _pollingTimer = null; // Réinitialise la variable du timer
     _currentPollingAssetId = null; // Réinitialise l'ID suivi
-     print("Stopped polling.");
+    print("Stopped polling.");
     // Optionnel: effacer l'actif des _livePrices si tu ne veux plus le garder en mémoire
     // _livePrices.clear(); // Si tu suis un seul actif à la fois
     // notifyListeners(); // Notifie si tu as effacé des données pour que l'UI se mette à jour
   }
 
-
   @override
   void dispose() {
     // IMPORTANT : Arrête le timer quand le provider n'est plus utilisé
     stopFetchingSingleAsset();
-     print("MarketDataProvider disposed.");
+    print("MarketDataProvider disposed.");
     super.dispose();
   }
 }

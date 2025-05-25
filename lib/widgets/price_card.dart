@@ -4,7 +4,7 @@ import '../models/market_data.dart';
 class PriceCard extends StatelessWidget {
   final MarketData marketData;
 
-  const PriceCard({Key? key, required this.marketData}) : super(key: key);
+  const PriceCard({super.key, required this.marketData});
 
   @override
   Widget build(BuildContext context) {

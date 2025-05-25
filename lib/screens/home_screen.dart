@@ -10,7 +10,7 @@ import 'package:investia/providers/auth_provider.dart';
 import 'package:investia/risk_management/navigation/app_router.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,8 @@ class HomeScreen extends StatelessWidget {
       color: colorScheme.onSurfaceVariant.withOpacity(0.85),
     );
 
-    final List<Widget> dashboardWidgets = _buildDashboardContent(context, authProvider, sectionTitleStyle, welcomeSubtitleStyle);
+    final List<Widget> dashboardWidgets = _buildDashboardContent(
+        context, authProvider, sectionTitleStyle, welcomeSubtitleStyle);
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -58,11 +59,11 @@ class HomeScreen extends StatelessWidget {
   }
 
   List<Widget> _buildDashboardContent(
-      BuildContext context,
-      AuthProvider authProvider,
-      TextStyle sectionTitleStyle,
-      TextStyle welcomeSubtitleStyle,
-      ) {
+    BuildContext context,
+    AuthProvider authProvider,
+    TextStyle sectionTitleStyle,
+    TextStyle welcomeSubtitleStyle,
+  ) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return [
@@ -178,8 +179,10 @@ class HomeScreen extends StatelessWidget {
             foregroundColor: colorScheme.error,
             side: BorderSide(color: colorScheme.error.withOpacity(0.6)),
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-            textStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            textStyle:
+                GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 16),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
           onPressed: () async {
             HapticFeedback.mediumImpact();
@@ -201,7 +204,10 @@ class HomeScreen extends StatelessWidget {
         children: [
           Icon(icon, color: theme.colorScheme.primary, size: 26),
           const SizedBox(width: 10),
-          Text(title, style: titleStyle ?? theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600)),
+          Text(title,
+              style: titleStyle ??
+                  theme.textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.w600)),
         ],
       ),
     );
@@ -212,7 +218,8 @@ class _AnimatedDashboardCard extends StatefulWidget {
   final int indexInList;
   final Widget child;
 
-  const _AnimatedDashboardCard({required this.indexInList, required this.child});
+  const _AnimatedDashboardCard(
+      {required this.indexInList, required this.child});
 
   @override
   State<_AnimatedDashboardCard> createState() => _AnimatedDashboardCardState();
@@ -228,7 +235,9 @@ class _AnimatedDashboardCardState extends State<_AnimatedDashboardCard> {
     final colorScheme = theme.colorScheme;
 
     final double elevation = _isPressed ? 0.5 : (_isHovering ? 8 : 4);
-    final Color shadowColor = _isHovering ? colorScheme.primary.withOpacity(0.25) : colorScheme.shadow.withOpacity(0.1);
+    final Color shadowColor = _isHovering
+        ? colorScheme.primary.withOpacity(0.25)
+        : colorScheme.shadow.withOpacity(0.1);
     final Duration animationDuration = const Duration(milliseconds: 200);
 
     return MouseRegion(
@@ -246,7 +255,9 @@ class _AnimatedDashboardCardState extends State<_AnimatedDashboardCard> {
           curve: Curves.easeInOut,
           margin: const EdgeInsets.symmetric(vertical: 7.0),
           decoration: BoxDecoration(
-            color: _isHovering ? colorScheme.surfaceContainerHigh : colorScheme.surfaceContainer,
+            color: _isHovering
+                ? colorScheme.surfaceContainerHigh
+                : colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(16.0),
             boxShadow: [
               BoxShadow(
@@ -257,7 +268,9 @@ class _AnimatedDashboardCardState extends State<_AnimatedDashboardCard> {
               ),
             ],
             border: Border.all(
-              color: _isHovering ? colorScheme.primary.withOpacity(0.5) : Colors.transparent,
+              color: _isHovering
+                  ? colorScheme.primary.withOpacity(0.5)
+                  : Colors.transparent,
               width: 1.5,
             ),
           ),
@@ -309,7 +322,8 @@ class _DashboardCardContent extends StatelessWidget {
           HapticFeedback.lightImpact();
           onPressed();
         },
-        borderRadius: BorderRadius.circular(16.0), // Doit correspondre à _AnimatedDashboardCard
+        borderRadius: BorderRadius.circular(
+            16.0), // Doit correspondre à _AnimatedDashboardCard
         splashColor: colorScheme.primary.withOpacity(0.12),
         highlightColor: colorScheme.primary.withOpacity(0.08),
         child: Padding(
@@ -368,7 +382,9 @@ class _DashboardCardContent extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.arrow_forward_ios_rounded, size: 18, color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
+              Icon(Icons.arrow_forward_ios_rounded,
+                  size: 18,
+                  color: colorScheme.onSurfaceVariant.withOpacity(0.6)),
             ],
           ),
         ),

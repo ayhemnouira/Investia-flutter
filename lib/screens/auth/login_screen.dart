@@ -9,7 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../risk_management/navigation/app_router.dart'; // Pour AppRoutes
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -49,12 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
         }
-
       } on SocketException {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Erreur réseau - Impossible de joindre le serveur.'),
+              content:
+                  Text('Erreur réseau - Impossible de joindre le serveur.'),
               backgroundColor: Colors.orangeAccent,
             ),
           );
@@ -72,7 +72,8 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Erreur de connexion: ${e.toString().replaceFirst("Exception: ", "")}'),
+              content: Text(
+                  'Erreur de connexion: ${e.toString().replaceFirst("Exception: ", "")}'),
               backgroundColor: Colors.redAccent,
             ),
           );
@@ -83,7 +84,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context); // Peut écouter isLoading
+    final authProvider =
+        Provider.of<AuthProvider>(context); // Peut écouter isLoading
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -92,7 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
-          child: ConstrainedBox( // Limiter la largeur sur les grands écrans
+          child: ConstrainedBox(
+            // Limiter la largeur sur les grands écrans
             constraints: const BoxConstraints(maxWidth: 400),
             child: Form(
               key: _formKey,
@@ -105,7 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 120,
                     height: 60,
                     margin: const EdgeInsets.only(bottom: 40.0),
-                    child: Image.asset('assets/images/aa.jpg', fit: BoxFit.contain),
+                    child: Image.asset('assets/images/aa.jpg',
+                        fit: BoxFit.contain),
                   ),
 
                   Text(
@@ -134,15 +138,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       labelText: 'Nom d\'utilisateur',
                       hintText: 'Entrez votre nom d\'utilisateur',
-                      prefixIcon: Icon(Icons.person_outline_rounded, color: colorScheme.primary),
+                      prefixIcon: Icon(Icons.person_outline_rounded,
+                          color: colorScheme.primary),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
                       filled: true,
-                      fillColor: colorScheme.surfaceContainerHighest, // Fond de champ légèrement différent
+                      fillColor: colorScheme
+                          .surfaceContainerHighest, // Fond de champ légèrement différent
                     ),
-                    validator: (value) =>
-                    (value?.isEmpty ?? true) ? 'Nom d\'utilisateur requis' : null,
+                    validator: (value) => (value?.isEmpty ?? true)
+                        ? 'Nom d\'utilisateur requis'
+                        : null,
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 20),
@@ -154,7 +161,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
                       hintText: 'Entrez votre mot de passe',
-                      prefixIcon: Icon(Icons.lock_outline_rounded, color: colorScheme.primary),
+                      prefixIcon: Icon(Icons.lock_outline_rounded,
+                          color: colorScheme.primary),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -175,9 +183,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       fillColor: colorScheme.surfaceContainerHighest,
                     ),
                     validator: (value) =>
-                    (value?.isEmpty ?? true) ? 'Mot de passe requis' : null,
+                        (value?.isEmpty ?? true) ? 'Mot de passe requis' : null,
                     textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (_) => _submitLogin(), // Permet de soumettre avec la touche "Entrée"
+                    onFieldSubmitted: (_) =>
+                        _submitLogin(), // Permet de soumettre avec la touche "Entrée"
                   ),
                   const SizedBox(height: 12),
 
@@ -188,7 +197,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         // TODO: Implémenter la logique de mot de passe oublié
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Fonctionnalité "Mot de passe oublié" à venir.')),
+                          const SnackBar(
+                              content: Text(
+                                  'Fonctionnalité "Mot de passe oublié" à venir.')),
                         );
                       },
                       child: Text(
@@ -203,20 +214,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   authProvider.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton.icon(
-                    icon: const Icon(Icons.login_rounded),
-                    label: const Text('Se connecter'),
-                    onPressed: _submitLogin,
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: GoogleFonts.poppins(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
+                          icon: const Icon(Icons.login_rounded),
+                          label: const Text('Se connecter'),
+                          onPressed: _submitLogin,
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              textStyle: GoogleFonts.poppins(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        )
-                    ),
-                  ),
                   const SizedBox(height: 24),
 
                   // Lien vers Signup

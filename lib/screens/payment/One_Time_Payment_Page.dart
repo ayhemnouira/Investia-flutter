@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OneTimePaymentPage extends StatelessWidget {
+  const OneTimePaymentPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,10 +19,11 @@ class OneTimePaymentPage extends StatelessWidget {
             Text("Please fill the form below to complete the payment",
                 style: TextStyle(fontSize: 16)),
             SizedBox(height: 30),
-            Container(
+            SizedBox(
               height: 100,
               child: TextField(
-                controller: TextEditingController(text: "Action ID9378267290 USD 1000000"),
+                controller: TextEditingController(
+                    text: "Action ID9378267290 USD 1000000"),
                 maxLines: null,
                 decoration: InputDecoration(
                   labelText: "Détails de l'action",
@@ -29,7 +32,8 @@ class OneTimePaymentPage extends StatelessWidget {
               ),
             ),
             TextField(decoration: InputDecoration(labelText: "Email Address")),
-            TextField(decoration: InputDecoration(labelText: "Credit card number")),
+            TextField(
+                decoration: InputDecoration(labelText: "Credit card number")),
             TextField(decoration: InputDecoration(labelText: "MM/AA")),
             TextField(decoration: InputDecoration(labelText: "CVC")),
             SizedBox(height: 20),
@@ -66,7 +70,8 @@ class OneTimePaymentPage extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            Text("An example project by IKentreprise", style: TextStyle(color: Colors.grey)),
+            Text("An example project by IKentreprise",
+                style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),

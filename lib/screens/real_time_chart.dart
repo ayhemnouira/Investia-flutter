@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:audioplayers/audioplayers.dart'; // Ajout pour le son
 
 class RealTimeMarketScreen extends StatefulWidget {
+  const RealTimeMarketScreen({super.key});
+
   @override
   _RealTimeMarketScreenState createState() => _RealTimeMarketScreenState();
 }

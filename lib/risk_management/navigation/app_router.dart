@@ -23,6 +23,9 @@ import 'package:investia/risk_management/features/recommendations/views/recommen
 
 // --- AuthProvider ---
 import 'package:investia/providers/auth_provider.dart';
+import 'package:investia/screens/wallet_screen.dart';
+import 'package:investia/screens/watchlist_screen.dart';
+import 'package:investia/screens/withdrawal_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
@@ -36,6 +39,12 @@ final GlobalKey<NavigatorState> _shellNavigatorOrdersKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellOrders');
 final GlobalKey<NavigatorState> _shellNavigatorRiskKey =
     GlobalKey<NavigatorState>(debugLabel: 'shellRisk');
+final GlobalKey<NavigatorState> _shellNavigatorWatchlistKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWatchlist');
+final GlobalKey<NavigatorState> _shellNavigatorWalletKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWallet');
+final GlobalKey<NavigatorState> _shellNavigatorWithdrawKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shellWithdraw');
 
 class AppRoutes {
   static const String login = '/login';
@@ -46,6 +55,9 @@ class AppRoutes {
   static const String orders = '/orders';
   static const String riskManagementList = '/risk-module/list';
   static const String assetDetail = '/asset-detail/:assetId';
+  static const String watchlist = '/watchlist';
+  static const String wallet = '/wallet';
+  static const String withdraw = '/withdraw';
   static String assetDetailPath(String assetId) => '/asset-detail/$assetId';
 
   // Route parente pour les services de paiement
@@ -112,8 +124,7 @@ GoRouter createGoRouter(AuthProvider authProvider) {
     routes: <RouteBase>[
       GoRoute(
         path: AppRoutes.login,
-        name: AppRoutes
-            .login, // Utiliser le chemin comme nom est une convention simple
+        name: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
@@ -179,6 +190,39 @@ GoRouter createGoRouter(AuthProvider authProvider) {
                 name: AppRoutes.riskManagementList,
                 builder: (BuildContext context, GoRouterState state) =>
                     const RiskListScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWatchlistKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.watchlist,
+                name: AppRoutes.watchlist,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WatchlistScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWalletKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.wallet,
+                name: AppRoutes.wallet,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WalletScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorWithdrawKey,
+            routes: <RouteBase>[
+              GoRoute(
+                path: AppRoutes.withdraw,
+                name: AppRoutes.withdraw,
+                builder: (BuildContext context, GoRouterState state) =>
+                    const WithdrawalScreen(),
               ),
             ],
           ),

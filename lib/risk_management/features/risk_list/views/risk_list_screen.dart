@@ -35,7 +35,6 @@ import '../../recommendations/views/recommendations_screen.dart'; // Chemin : ..
 
 // =================================================================
 
-
 // RiskListScreen est un ConsumerWidget
 class RiskListScreen extends ConsumerWidget {
   const RiskListScreen({super.key});
@@ -74,7 +73,8 @@ class RiskListScreen extends ConsumerWidget {
                   Text(
                     'Erreur lors du chargement des risques:\n$error',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.error),
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton.icon(
@@ -89,16 +89,13 @@ class RiskListScreen extends ConsumerWidget {
         },
         data: (risks) {
           if (risks.isEmpty) {
-            return const Center(child: Text('Aucun risque enregistré pour le moment.'));
+            return const Center(
+                child: Text('Aucun risque enregistré pour le moment.'));
           }
           return ListView.builder(
             itemCount: risks.length,
             itemBuilder: (context, index) {
               final risk = risks[index];
-              if (risk == null) {
-                 print("Erreur critique: risk est null à l'index $index !");
-                 return const ListTile(leading: Icon(Icons.error, color: Colors.red), title: Text("Erreur: Donnée de risque invalide"), subtitle: Text("Impossible d'afficher cet élément."));
-              }
               return RiskListItem(
                 risk: risk,
                 onDelete: () {
@@ -110,20 +107,22 @@ class RiskListScreen extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         tooltip: 'Ajouter un risque',
         onPressed: () {
           context.push(AppRoutes.addRisk);
         },
+        child: const Icon(Icons.add),
       ),
     );
   }
 
   // --- MÉTHODE POUR AFFICHER LE DIALOGUE DE CONFIRMATION DE SUPPRESSION ---
-  Future<void> _showDeleteConfirmationDialog(BuildContext context, WidgetRef ref, Risk risk) async {
+  Future<void> _showDeleteConfirmationDialog(
+      BuildContext context, WidgetRef ref, Risk risk) async {
     final int? riskId = risk.id;
     if (riskId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Impossible de supprimer : ID du risque manquant.')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Impossible de supprimer : ID du risque manquant.')));
       return;
     }
     final String riskName = risk.name ?? 'Risque sans nom';
@@ -132,48 +131,60 @@ class RiskListScreen extends ConsumerWidget {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext dialogContext) {
-        return Consumer(
-            builder: (context, dialogRef, child) {
-              return AlertDialog(
-                title: const Text('Confirmer la suppression'),
-                content: SingleChildScrollView(child: ListBody(children: <Widget>[ Text('Êtes-vous sûr de vouloir supprimer le risque "$riskName" (ID: $riskId) ?'), const Text('Cette action est irréversible.', style: TextStyle(fontWeight: FontWeight.bold))])),
-                actions: <Widget>[
-                  TextButton(child: const Text('Annuler'), onPressed: () { Navigator.of(dialogContext).pop(); }),
-                  TextButton(
-                    style: TextButton.styleFrom(foregroundColor: Colors.red),
-                    child: const Text('Supprimer'),
-                    onPressed: () async {
-                      Navigator.of(dialogContext).pop();
-                      try {
-                        // Appelle le service via son provider Riverpod
-                        await dialogRef.read(riskServiceProvider).deleteRisk(riskId);
+        return Consumer(builder: (context, dialogRef, child) {
+          return AlertDialog(
+            title: const Text('Confirmer la suppression'),
+            content: SingleChildScrollView(
+                child: ListBody(children: <Widget>[
+              Text(
+                  'Êtes-vous sûr de vouloir supprimer le risque "$riskName" (ID: $riskId) ?'),
+              const Text('Cette action est irréversible.',
+                  style: TextStyle(fontWeight: FontWeight.bold))
+            ])),
+            actions: <Widget>[
+              TextButton(
+                  child: const Text('Annuler'),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                  }),
+              TextButton(
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('Supprimer'),
+                onPressed: () async {
+                  Navigator.of(dialogContext).pop();
+                  try {
+                    // Appelle le service via son provider Riverpod
+                    await dialogRef
+                        .read(riskServiceProvider)
+                        .deleteRisk(riskId);
 
-                        print('Suppression réussie via service pour ID: $riskId');
+                    print('Suppression réussie via service pour ID: $riskId');
 
-                        if (!context.mounted) return;
+                    if (!context.mounted) return;
 
-                        ScaffoldMessenger.of(context).showSnackBar(
-                           SnackBar(content: Text('Risque "$riskName" (ID: $riskId) supprimé.')),
-                        );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          content: Text(
+                              'Risque "$riskName" (ID: $riskId) supprimé.')),
+                    );
 
-                        // Invalide le provider de la liste pour rafraîchir
-                        dialogRef.invalidate(riskListProvider);
-
-                      } catch (e) {
-                        print('Erreur lors de la tentative de suppression pour ID $riskId: $e');
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Erreur lors de la suppression du risque ID $riskId: $e'), backgroundColor: Theme.of(context).colorScheme.error)
-                        );
-                      }
-                    },
-                  ),
-                ],
-              );
-            }
-        );
+                    // Invalide le provider de la liste pour rafraîchir
+                    dialogRef.invalidate(riskListProvider);
+                  } catch (e) {
+                    print(
+                        'Erreur lors de la tentative de suppression pour ID $riskId: $e');
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(
+                            'Erreur lors de la suppression du risque ID $riskId: $e'),
+                        backgroundColor: Theme.of(context).colorScheme.error));
+                  }
+                },
+              ),
+            ],
+          );
+        });
       },
     );
   }
-
 }

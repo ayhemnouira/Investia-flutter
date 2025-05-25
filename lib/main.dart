@@ -66,7 +66,7 @@ Future<void> main() async {
 class MyApp extends ConsumerWidget {
   final AuthProvider authProviderInstance;
 
-  const MyApp({Key? key, required this.authProviderInstance}) : super(key: key);
+  const MyApp({super.key, required this.authProviderInstance});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -8,7 +8,7 @@ import '../../providers/auth_provider.dart';
 import '../../risk_management/navigation/app_router.dart'; // Pour AppRoutes
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({Key? key}) : super(key: key);
+  const SignupScreen({super.key});
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -57,7 +57,8 @@ class _SignupScreenState extends State<SignupScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Erreur d\'enregistrement: ${e.toString().replaceFirst("Exception: ", "")}'),
+              content: Text(
+                  'Erreur d\'enregistrement: ${e.toString().replaceFirst("Exception: ", "")}'),
               backgroundColor: Colors.redAccent,
             ),
           );
@@ -95,8 +96,10 @@ class _SignupScreenState extends State<SignupScreen> {
                   Container(
                     width: 120,
                     height: 60,
-                    margin: const EdgeInsets.only(bottom: 30.0), // Un peu moins d'espace qu'au login
-                    child: Image.asset('assets/images/aa.jpg', fit: BoxFit.contain),
+                    margin: const EdgeInsets.only(
+                        bottom: 30.0), // Un peu moins d'espace qu'au login
+                    child: Image.asset('assets/images/aa.jpg',
+                        fit: BoxFit.contain),
                   ),
 
                   Text(
@@ -125,13 +128,16 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: InputDecoration(
                       labelText: 'Nom d\'utilisateur',
                       hintText: 'Choisissez un nom d\'utilisateur',
-                      prefixIcon: Icon(Icons.person_outline_rounded, color: colorScheme.primary),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: Icon(Icons.person_outline_rounded,
+                          color: colorScheme.primary),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       filled: true,
                       fillColor: colorScheme.surfaceContainerHighest,
                     ),
-                    validator: (value) =>
-                    (value?.isEmpty ?? true) ? 'Nom d\'utilisateur requis' : null,
+                    validator: (value) => (value?.isEmpty ?? true)
+                        ? 'Nom d\'utilisateur requis'
+                        : null,
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 20),
@@ -143,15 +149,19 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: InputDecoration(
                       labelText: 'Adresse e-mail',
                       hintText: 'Entrez votre e-mail',
-                      prefixIcon: Icon(Icons.email_outlined, color: colorScheme.primary),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      prefixIcon: Icon(Icons.email_outlined,
+                          color: colorScheme.primary),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       filled: true,
                       fillColor: colorScheme.surfaceContainerHighest,
                     ),
                     validator: (value) {
                       if (value?.isEmpty ?? true) return 'E-mail requis';
-                      final emailRegex = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-                      if (!emailRegex.hasMatch(value!)) return 'Format d\'e-mail invalide';
+                      final emailRegex = RegExp(
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+                      if (!emailRegex.hasMatch(value!))
+                        return 'Format d\'e-mail invalide';
                       return null;
                     },
                     textInputAction: TextInputAction.next,
@@ -165,7 +175,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: InputDecoration(
                       labelText: 'Mot de passe',
                       hintText: 'Créez un mot de passe sécurisé',
-                      prefixIcon: Icon(Icons.lock_outline_rounded, color: colorScheme.primary),
+                      prefixIcon: Icon(Icons.lock_outline_rounded,
+                          color: colorScheme.primary),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -173,15 +184,18 @@ class _SignupScreenState extends State<SignupScreen> {
                               : Icons.visibility_outlined,
                           color: colorScheme.onSurfaceVariant,
                         ),
-                        onPressed: () => setState(() => _isPasswordVisible = !_isPasswordVisible),
+                        onPressed: () => setState(
+                            () => _isPasswordVisible = !_isPasswordVisible),
                       ),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       filled: true,
                       fillColor: colorScheme.surfaceContainerHighest,
                     ),
                     validator: (value) {
                       if (value?.isEmpty ?? true) return 'Mot de passe requis';
-                      if (value!.length < 6) return 'Le mot de passe doit contenir au moins 6 caractères'; // Exemple de règle
+                      if (value!.length < 6)
+                        return 'Le mot de passe doit contenir au moins 6 caractères'; // Exemple de règle
                       return null;
                     },
                     textInputAction: TextInputAction.next,
@@ -195,7 +209,9 @@ class _SignupScreenState extends State<SignupScreen> {
                     decoration: InputDecoration(
                       labelText: 'Confirmer le mot de passe',
                       hintText: 'Retapez votre mot de passe',
-                      prefixIcon: Icon(Icons.lock_person_outlined, color: colorScheme.primary), // Icône légèrement différente
+                      prefixIcon: Icon(Icons.lock_person_outlined,
+                          color: colorScheme
+                              .primary), // Icône légèrement différente
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isConfirmPasswordVisible
@@ -203,15 +219,20 @@ class _SignupScreenState extends State<SignupScreen> {
                               : Icons.visibility_outlined,
                           color: colorScheme.onSurfaceVariant,
                         ),
-                        onPressed: () => setState(() => _isConfirmPasswordVisible = !_isConfirmPasswordVisible),
+                        onPressed: () => setState(() =>
+                            _isConfirmPasswordVisible =
+                                !_isConfirmPasswordVisible),
                       ),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12)),
                       filled: true,
                       fillColor: colorScheme.surfaceContainerHighest,
                     ),
                     validator: (value) {
-                      if (value?.isEmpty ?? true) return 'Veuillez confirmer le mot de passe';
-                      if (value != _passwordController.text) return 'Les mots de passe ne correspondent pas';
+                      if (value?.isEmpty ?? true)
+                        return 'Veuillez confirmer le mot de passe';
+                      if (value != _passwordController.text)
+                        return 'Les mots de passe ne correspondent pas';
                       return null;
                     },
                     textInputAction: TextInputAction.done,
@@ -223,20 +244,19 @@ class _SignupScreenState extends State<SignupScreen> {
                   authProvider.isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : ElevatedButton.icon(
-                    icon: const Icon(Icons.person_add_alt_1_rounded),
-                    label: const Text('Créer le compte'),
-                    onPressed: _submitSignup,
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        textStyle: GoogleFonts.poppins(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
+                          icon: const Icon(Icons.person_add_alt_1_rounded),
+                          label: const Text('Créer le compte'),
+                          onPressed: _submitSignup,
+                          style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              textStyle: GoogleFonts.poppins(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        )
-                    ),
-                  ),
                   const SizedBox(height: 24),
 
                   // Lien vers Login
@@ -255,7 +275,8 @@ class _SignupScreenState extends State<SignupScreen> {
                           if (context.canPop()) {
                             context.pop();
                           } else {
-                            context.go(AppRoutes.login); // Fallback si on ne peut pas pop
+                            context.go(AppRoutes
+                                .login); // Fallback si on ne peut pas pop
                           }
                         },
                         child: Text(

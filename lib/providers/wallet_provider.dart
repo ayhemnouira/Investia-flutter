@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
-import '../models/wallet.dart';
-import '../models/wallet_transaction.dart';
-import '../services/api_service.dart';
 
 class WalletProvider with ChangeNotifier {
-  final ApiService _apiService = ApiService();
-  Wallet? _wallet;
+  Map<String, dynamic> _wallet = {'id': '123456', 'balance': 1000.00};
+  String? _message;
 
-  Wallet? get wallet => _wallet;
+  Map<String, dynamic> get wallet => _wallet;
+  String? get message => _message;
 
-  Future<void> fetchUserWallet() async {
-    try {
-      _wallet = await _apiService.getUserWallet();
+  void transfer(String recipientId, double amount, String purpose) {
+    if (recipientId.isEmpty || amount <= 0) {
+      _message = 'Invalid input';
       notifyListeners();
-    } catch (e) {
-      print(e);
+      return;
     }
+    if (amount > _wallet['balance']) {
+      _message = 'Insufficient balance';
+      notifyListeners();
+      return;
+    }
+    _wallet = {..._wallet, 'balance': _wallet['balance'] - amount};
+    _message = 'Transfer successful';
+    notifyListeners();
   }
 
-  Future<void> transfer(int walletId, WalletTransaction transaction) async {
-    try {
-      _wallet = await _apiService.walletToWalletTransfer(walletId, transaction);
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+  void clearMessage() {
+    _message = null;
+    notifyListeners();
   }
 }

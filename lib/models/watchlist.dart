@@ -1,5 +1,3 @@
-
-
 import 'package:investia/models/coin.dart';
 
 class Watchlist {
@@ -12,13 +10,19 @@ class Watchlist {
   });
 
   factory Watchlist.fromJson(Map<String, dynamic> json) {
-    var coinsList = json['coins'] as List<dynamic>? ?? [];
-    List<Coin> coins =
-        coinsList.map((coinJson) => Coin.fromJson(coinJson)).toList();
-
     return Watchlist(
-      id: json['id'] ?? 0,
-      coins: coins,
+      id: json['id'] as int? ?? 0, // Parse id, default to 0 if missing
+      coins: (json['coins'] as List<dynamic>?)
+              ?.map((e) => Coin.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'coins': coins.map((e) => e.toJson()).toList(),
+    };
   }
 }
